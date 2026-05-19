@@ -1,0 +1,16 @@
+{
+  "name": "step-functions1",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc && node scripts/bundle.js",
+    "test": "npx ts-node tests/test-states.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sfn": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.20.0",
+    "typescript": "^5.0.0"
+  }
+}
