@@ -8,7 +8,7 @@ terraform/*.tfstate
 terraform/*.tfstate.backup
 terraform/*.tfplan
 terraform/tfplan
-terraform/.terraform.lock.hcl
+
 
 # Env
 .env
