@@ -23,7 +23,7 @@ npm run build
 
 ```bash
 cd infra/terraform
-terraform init
+terraform init (solo la pima volta)
 
 $env:AWS_PROFILE="xxx"
 
