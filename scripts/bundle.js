@@ -11,10 +11,10 @@ for (const name of lambdas) {
 
   esbuild.buildSync({
     entryPoints: [`src/${name}/index.ts`],
+    outfile: `${outdir}/index.js`,
     bundle: true,
     platform: "node",
-    target: "node20",
-    outfile: `${outdir}/index.js`,
+    target: "node22",
     external: [],
   });
 

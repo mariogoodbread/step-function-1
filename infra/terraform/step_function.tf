@@ -1,8 +1,8 @@
 # Lambda che esegue la chiamata al servizio REST esterno
 resource "aws_lambda_function" "invoke" {
   function_name    = "${var.project}-invoke"
-  filename         = "${path.module}/../dist/invoke.zip"
-  source_code_hash = filebase64sha256("${path.module}/../dist/invoke.zip") # rileva modifiche al codice
+  filename         = "${path.root}/../../dist/invoke.zip"
+  source_code_hash = filebase64sha256("${path.root}/../../dist/invoke.zip") # rileva modifiche al codice
   handler          = "index.handler"
   runtime          = "nodejs20.x"
   role             = aws_iam_role.lambda.arn
@@ -17,8 +17,8 @@ resource "aws_lambda_function" "invoke" {
 # Lambda che esegue la compensazione applicativa in caso di errore
 resource "aws_lambda_function" "compensate" {
   function_name    = "${var.project}-compensate"
-  filename         = "${path.module}/../dist/compensate.zip"
-  source_code_hash = filebase64sha256("${path.module}/../dist/compensate.zip") # rileva modifiche al codice
+  filename         = "${path.root}/../../dist/compensate.zip"
+  source_code_hash = filebase64sha256("${path.root}/../../dist/compensate.zip") # rileva modifiche al codice
   handler          = "index.handler"
   runtime          = "nodejs20.x"
   role             = aws_iam_role.lambda.arn

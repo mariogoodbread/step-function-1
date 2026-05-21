@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "target": "ES2020",
+        "module": "commonjs",
+        "strict": true,
+        "esModuleInterop": true,
+        "outDir": "D:\\Tests\\step-functions1\\dist",
+        "sourceMap": true,
+        "rootDir": ".",
+        "types": [
+            "node"
+        ],
+        "sourceRoot": "D:/Tests/step-functions1",
+        "typeRoots": [
+            "node_modules/@types"
+        ]
+    },
+    "include": [
+        "src"
+    ]
+}

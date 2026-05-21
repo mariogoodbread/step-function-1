@@ -22,7 +22,7 @@ npm run build
 ## Deploy
 
 ```bash
-cd terraform
+cd infra/terraform
 terraform init
 
 $env:AWS_PROFILE="xxx"
@@ -31,6 +31,8 @@ terraform plan -out=tfplan
 
 terraform apply tfplan
 ```
+
+
 
 ## Test
 

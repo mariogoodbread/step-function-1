@@ -9,7 +9,11 @@ interface InvokeOutput {
   status: string;
 }
 
+console.log("HIT HANDLER");
+
 export const handler = async (event: InvokeInput): Promise<InvokeOutput> => {
+  console.log("handler event:", JSON.stringify(event));
+
   const url = process.env.REST_URL;
   if (!url) throw new Error("REST_URL environment variable is not set");
 

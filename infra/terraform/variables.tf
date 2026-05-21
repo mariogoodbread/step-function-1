@@ -12,3 +12,5 @@ variable "project" {
 variable "rest_url" {
   default = "https://jsonplaceholder.typicode.com/todos/1"
 }
+
+
