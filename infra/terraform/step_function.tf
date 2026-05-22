@@ -12,6 +12,9 @@ module "lambda_invoke" {
   environment_variables = {
     REST_URL = var.rest_url
   }
+
+  logging_log_format       = "JSON"
+  logging_system_log_level = "DEBUG"
 }
 
 module "lambda_compensate" {
@@ -25,6 +28,8 @@ module "lambda_compensate" {
   create_package         = false
   local_existing_package = "${path.root}/../../dist/compensate.zip"
 
+  logging_log_format       = "JSON"
+  logging_system_log_level = "DEBUG"
 }
 
 module "step_functions" {

@@ -12,7 +12,7 @@ Resources:
     Properties:
       Runtime: nodejs22.x
       Handler: index.handler
-      CodeUri: dist/invoke
+      CodeUri: ../dist/invoke
       Environment:
         Variables:
           REST_URL: https://jsonplaceholder.typicode.com/todos/1
@@ -22,4 +22,4 @@ Resources:
     Properties:
       Runtime: nodejs22.x
       Handler: index.handler
-      CodeUri: dist/compensate
+      CodeUri: ../dist/compensate

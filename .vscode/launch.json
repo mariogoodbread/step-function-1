@@ -10,7 +10,7 @@
             "name": "Debug Invoke Lambda",
             "invokeTarget": {
                 "target": "template",
-                "templatePath": "${workspaceFolder}/template.yaml",
+                "templatePath": "${workspaceFolder}/infra/template.yaml",
                 "logicalId": "InvokeFunction"
             },
             "lambda": {
