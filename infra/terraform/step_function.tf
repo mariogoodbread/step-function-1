@@ -1,27 +1,30 @@
-# Lambda che esegue la chiamata al servizio REST esterno
-resource "aws_lambda_function" "invoke" {
-  function_name    = "${var.project}-invoke"
-  filename         = "${path.root}/../../dist/invoke.zip"
-  source_code_hash = filebase64sha256("${path.root}/../../dist/invoke.zip") # rileva modifiche al codice
-  handler          = "index.handler"
-  runtime          = "nodejs20.x"
-  role             = aws_iam_role.lambda.arn
+module "lambda_invoke" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "~> 7.0"
 
-  environment {
-    variables = {
-      REST_URL = var.rest_url
-    }
+  function_name = "${var.project}-invoke"
+  handler       = "index.handler"
+  runtime       = "nodejs20.x"
+
+  create_package         = false
+  local_existing_package = "${path.root}/../../dist/invoke.zip"
+
+  environment_variables = {
+    REST_URL = var.rest_url
   }
 }
 
-# Lambda che esegue la compensazione applicativa in caso di errore
-resource "aws_lambda_function" "compensate" {
-  function_name    = "${var.project}-compensate"
-  filename         = "${path.root}/../../dist/compensate.zip"
-  source_code_hash = filebase64sha256("${path.root}/../../dist/compensate.zip") # rileva modifiche al codice
-  handler          = "index.handler"
-  runtime          = "nodejs20.x"
-  role             = aws_iam_role.lambda.arn
+module "lambda_compensate" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "~> 7.0"
+
+  function_name = "${var.project}-compensate"
+  handler       = "index.handler"
+  runtime       = "nodejs20.x"
+
+  create_package         = false
+  local_existing_package = "${path.root}/../../dist/compensate.zip"
+
 }
 
 module "step_functions" {
@@ -36,7 +39,7 @@ module "step_functions" {
     States = {
       InvokeRestService = {
         Type     = "Task"
-        Resource = aws_lambda_function.invoke.arn
+        Resource = module.lambda_invoke.lambda_function_arn
         Catch = [{
           ErrorEquals = ["States.ALL"]
           ResultPath  = "$.error"
@@ -46,7 +49,7 @@ module "step_functions" {
       }
       Compensate = {
         Type     = "Task"
-        Resource = aws_lambda_function.compensate.arn
+        Resource = module.lambda_compensate.lambda_function_arn
         Next     = "Failure"
       }
       Success = {
@@ -66,8 +69,8 @@ module "step_functions" {
       effect    = "Allow"
       actions   = ["lambda:InvokeFunction"]
       resources = [
-        aws_lambda_function.invoke.arn,
-        aws_lambda_function.compensate.arn,
+        module.lambda_invoke.lambda_function_arn,
+        module.lambda_compensate.lambda_function_arn,
       ]
     }
   }
