@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "build": "node scripts/bundle.js",
+    "tplan": "terraform plan -out=tfplan",
+    "tapply": "terraform apply tfplan",
     "test": "npx ts-node tests/test-states.ts"
   },
   "dependencies": {

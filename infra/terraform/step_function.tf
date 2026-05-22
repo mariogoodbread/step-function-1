@@ -24,38 +24,34 @@ resource "aws_lambda_function" "compensate" {
   role             = aws_iam_role.lambda.arn
 }
 
-# State machine Step Functions che orchestra il workflow con compensazione
-resource "aws_sfn_state_machine" "workflow" {
-  name     = "${var.project}-workflow"
-  role_arn = aws_iam_role.sfn.arn
+module "step_functions" {
+  source  = "terraform-aws-modules/step-functions/aws"
+  version = "~> 4.0"
+
+  name = "${var.project}-workflow"
 
   definition = jsonencode({
     Comment = "Workflow con compensazione applicativa"
     StartAt = "InvokeRestService"
     States = {
-      # Stato iniziale: chiama la Lambda invoke
-      # In caso di qualsiasi errore, passa a Compensate
       InvokeRestService = {
         Type     = "Task"
         Resource = aws_lambda_function.invoke.arn
         Catch = [{
-          ErrorEquals = ["States.ALL"] # intercetta tutti gli errori
-          ResultPath  = "$.error"      # salva il dettaglio errore nell'input
+          ErrorEquals = ["States.ALL"]
+          ResultPath  = "$.error"
           Next        = "Compensate"
         }]
         Next = "Success"
       }
-      # Stato di compensazione: esegue il rollback chiamando la Lambda compensate
       Compensate = {
         Type     = "Task"
         Resource = aws_lambda_function.compensate.arn
         Next     = "Failure"
       }
-      # Stato finale positivo: il servizio REST ha risposto correttamente
       Success = {
         Type = "Succeed"
       }
-      # Stato finale negativo: la compensazione è stata eseguita
       Failure = {
         Type  = "Fail"
         Error = "WorkflowFailed"
@@ -63,9 +59,20 @@ resource "aws_sfn_state_machine" "workflow" {
       }
     }
   })
+
+  attach_policy_statements = true
+  policy_statements = {
+    lambda = {
+      effect    = "Allow"
+      actions   = ["lambda:InvokeFunction"]
+      resources = [
+        aws_lambda_function.invoke.arn,
+        aws_lambda_function.compensate.arn,
+      ]
+    }
+  }
 }
 
-# Output: ARN della state machine, utile per avviare esecuzioni via CLI o console
 output "state_machine_arn" {
-  value = aws_sfn_state_machine.workflow.arn
+  value = module.step_functions.state_machine_arn
 }
